@@ -57,23 +57,18 @@ The current application serves as a powerful and complete proof-of-concept. The 
 
 1.  **Clone the repository:**
     ```bash
-    git clone [your-repo-url]
+    git clone https://github.com/shamzahasan88/RCC-Brain-Design-Challenge.git
     ```
 2.  **Navigate to the project directory:**
     ```bash
-    cd [project-directory]
+    cd RCC-Brain-Design-Challenge
     ```
-3.  **Set up environment variables:**
-    ```bash
-    cp .env.example .env.local
-    ```
-    *Fill in the required AWS credentials and agent IDs in the `.env.local` file.*
-4.  **Install dependencies:**
+3.  **Install dependencies:**
     ```bash
     npm install
     ```
-5.  **Run the development server:**
+4.  **Run the development server:**
     ```bash
     npm run dev
     ```
-6.  Open [http://localhost:3000](http://localhost:3000) in your browser.
+5.  Open [http://localhost:3000](http://localhost:3000) in your browser.
