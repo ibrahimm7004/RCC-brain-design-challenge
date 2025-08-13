@@ -4,7 +4,7 @@ This repository contains the completed frontend for the Oracle Utilities AI Assi
 
 ---
 
-## 🌟 Vision & Accomplishments
+## Vision & Accomplishments
 
 This project successfully fulfills all core requirements and creatively expands upon the "bonus" features to deliver a superior final product.
 
@@ -18,7 +18,7 @@ This project successfully fulfills all core requirements and creatively expands 
 
 ---
 
-## 🛠️ Tech Stack & Architecture
+## Tech Stack & Architecture
 
 The application is built on a modern, robust, and scalable tech stack.
 
@@ -35,7 +35,7 @@ The application is built on a modern, robust, and scalable tech stack.
 
 ---
 
-## 🔮 Future Roadmap & Potential
+## Future Roadmap & Potential
 
 The current application serves as a powerful and complete proof-of-concept. The architecture was intentionally designed to be scalable, paving the way for several high-impact future enhancements.
 
@@ -46,7 +46,7 @@ The current application serves as a powerful and complete proof-of-concept. The 
 
 ---
 
-## 📦 Setup & Installation
+## Setup & Installation
 
 ### Prerequisites
 
