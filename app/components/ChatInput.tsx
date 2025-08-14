@@ -11,7 +11,6 @@ interface ChatInputProps {
   placeholder?: string;
   isOnHomePage?: boolean;
   failedPrompt?: string | null;
-  prefillValue?: string | null;
 }
 
 export const ChatInput: React.FC<ChatInputProps> = ({
@@ -21,7 +20,6 @@ export const ChatInput: React.FC<ChatInputProps> = ({
   placeholder = "Ask the Oracle Utilities assistant anything...",
   isOnHomePage = false,
   failedPrompt,
-  prefillValue
 }) => {
   const [inputValue, setInputValue] = useState('');
   const textareaRef = useRef<HTMLTextAreaElement>(null);
@@ -34,14 +32,6 @@ export const ChatInput: React.FC<ChatInputProps> = ({
       textareaRef.current?.focus();
     }
   }, [failedPrompt]);
-
-  // Auto-focus and populate input when there's a prefill value
-  useEffect(() => {
-    if (prefillValue) {
-      setInputValue(prefillValue);
-      textareaRef.current?.focus();
-    }
-  }, [prefillValue]);
 
   // Auto-resize textarea based on content
   useEffect(() => {

@@ -26,7 +26,6 @@ export default function ChatPage() {
   const [animationStyle, setAnimationStyle] = useState<AnimationStyle>('smooth');
   const [currentStreamingMessageId, setCurrentStreamingMessageId] = useState<string | null>(null);
   const [failedPrompt, setFailedPrompt] = useState<string | null>(null);
-  const [prefillInput, setPrefillInput] = useState<string | null>(null);
   const settingsRef = useRef<HTMLDivElement>(null);
 
   const initialMessageProcessed = useRef(false);
@@ -66,7 +65,7 @@ export default function ChatPage() {
     const initialMessage = searchParams.get('message');
     if (initialMessage && !initialMessageProcessed.current) {
       initialMessageProcessed.current = true;
-      setPrefillInput(initialMessage);
+      handleSendMessage(initialMessage);
     }
   }, [searchParams]);
 
@@ -329,7 +328,7 @@ export default function ChatPage() {
       </header>
 
       <main ref={scrollContainerRef} onScroll={handleScroll} className="flex-1 overflow-y-auto">
-        <div ref={contentRef} className="mx-auto max-w-4xl pt-4">
+        <div ref={contentRef} className="mx-auto pt-4">
           {messages.map((message) => (
             <ChatMessage
               key={`${message.id}-${animationStyle}`}
@@ -353,7 +352,6 @@ export default function ChatPage() {
         onStop={handleStopGeneration}
         placeholder="Ask about Oracle Utilities..."
         failedPrompt={failedPrompt}
-        prefillValue={prefillInput}
       />
     </div>
   );
