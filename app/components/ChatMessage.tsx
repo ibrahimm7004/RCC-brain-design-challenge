@@ -37,6 +37,12 @@ export const ChatMessage: React.FC<ChatMessageProps> = ({
 
   const displayedRef = useRef(displayedContent);
   displayedRef.current = displayedContent;
+  const messageContainerClasses = clsx(
+    'group w-full py-6 transition-all duration-200',
+    {
+      // REMOVED: The 'bg-white/50' that was causing the unwanted background
+    }
+  );
   useEffect(() => {
     displayedRef.current = displayedStable + fadingChunk;
   }, [displayedStable, fadingChunk]);
@@ -195,40 +201,43 @@ export const ChatMessage: React.FC<ChatMessageProps> = ({
   };
 
   return (
-    <div className={`group w-full py-3`} role="article" aria-labelledby={`message-${messageId}`}>
+    <div className={messageContainerClasses} role="article" aria-labelledby={`message-${messageId}`}>
       <div className="max-w-4xl mx-auto px-6">
-        <div className={`flex gap-4 ${isUser ? 'flex-row-reverse' : 'flex-row'}`}>
+        {/* THIS IS THE FIX for user message alignment */}
+        <div className={`flex gap-4 ${isUser ? 'flex-row-reverse' : ''}`}>
+          {/* Avatar */}
           <div className={`flex-shrink-0 w-10 h-10 rounded-xl flex items-center justify-center shadow-lg ${isUser ? 'bg-primary-gradient' : 'bg-secondary-gradient'} text-white`}>
             {isUser ? <User size={18} /> : <Bot size={18} />}
           </div>
-          <div className={`flex-1 min-w-0 ${isUser ? 'text-right' : 'text-left'}`}>
-            <div className={`flex items-center gap-2 mb-2 ${isUser ? 'justify-end' : 'justify-start'}`}>
-              <span className="font-semibold text-sm text-charcoal dark:text-off-white">{isUser ? 'You' : 'Oracle Assistant'}</span>
-              <span className="text-xs text-medium-gray">{timestamp}</span>
+
+          <div className="flex-1 min-w-0">
+            {/* Header with name and timestamp */}
+            <div className={`flex items-center gap-2 mb-2 ${isUser ? 'justify-end' : ''}`}>
+              <span className="font-semibold text-sm text-charcoal dark:text-off-white">
+                {isUser ? 'You' : 'Oracle Assistant'}
+              </span>
+              {timestamp && <span className="text-xs text-medium-gray opacity-0 group-hover:opacity-100 transition-opacity duration-300">{timestamp}</span>}
             </div>
-            <div className={`${isUser ? 'text-right' : 'text-left'}`}>
-              <div className={`inline-block max-w-full p-4 rounded-2xl shadow-sm ${isUser
-                ? 'bg-primary-gradient text-white rounded-br-lg'
-                : 'bg-white dark:bg-charcoal text-charcoal dark:text-off-white rounded-bl-lg'
-                }`}>
-                <div className={`leading-relaxed whitespace-pre-wrap ${getCursorAnimation()}`}>
-                  {/* Render the stable, already-animated part of the message */}
-                  <span>{displayedStable}</span>
-                  
-                  {/* Render the new chunk with the fade-in effect for Gemini */}
-                  {fadingChunk && (
-                    <span className={fadeOn ? 'animate-fade-in-word' : 'opacity-0'}>
-                      {fadingChunk}
-                    </span>
-                  )}
-                  
-                  {/* Show "Thinking..." placeholder only if there's no content yet */}
-                  {displayedContent.length === 0 && isStreaming && (
-                    <span className="opacity-60">Thinking...</span>
-                  )}
+            
+            {isUser ? (
+              // USER gets a contained bubble, aligned right by the parent flex-row-reverse
+              <div className="flex justify-end">
+                <div className="inline-block max-w-[70%] p-4 rounded-2xl shadow-sm bg-primary-gradient text-white rounded-br-lg">
+                  <div className={`leading-relaxed whitespace-pre-wrap text-left`}>
+                    {displayedContent}
+                  </div>
                 </div>
               </div>
-            </div>
+            ) : (
+              // ASSISTANT gets a full-width, "unboxed" response
+              <div>
+                <div className={`leading-relaxed whitespace-pre-wrap text-left ${getCursorAnimation()}`}>
+                  <span>{displayedStable}</span>
+                  {fadingChunk && ( <span className={fadeOn ? 'animate-fade-in' : 'opacity-0'}>{fadingChunk}</span> )}
+                  {displayedContent.length === 0 && isStreaming && ( <span className="opacity-60">Thinking...</span> )}
+                </div>
+              </div>
+            )}
             {!isStreaming && content && (
               <div className={`mt-2 opacity-0 group-hover:opacity-100 transition-opacity duration-200 ${isUser ? 'text-right' : 'text-left'}`}>
                 <div className="inline-flex items-center gap-1">

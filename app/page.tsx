@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useEffect } from 'react';
-import { BrainCircuit, Code, FileText, Lightbulb, Moon, Sun, ClipboardCheck } from 'lucide-react';
+import { BrainCircuit, Code, FileText, Lightbulb, Moon, Sun, ClipboardCheck, BookOpen, Puzzle, FileStack, Bot } from 'lucide-react';
 import { Card } from '@/app/components/Card';
 import { ChatInput } from '@/app/components/ChatInput';
 import Link from 'next/link';
@@ -10,11 +10,11 @@ export default function HomePage() {
   const [isDarkMode, setIsDarkMode] = useState(true);
 
   const prompts = [
-    { title: "Summarize Document", description: "Condense a complex document", icon: <FileText /> },
-    { title: "Get Project Status", description: "Check the latest updates on projects", icon: <ClipboardCheck /> },
-    { title: "Explain Code Snippet", description: "Break down a piece of code", icon: <Code /> },
-    { title: "Brainstorm Ideas", description: "Generate creative concepts", icon: <Lightbulb /> },
-    { title: "Technical Q&A", description: "Ask a specific tech question", icon: <BrainCircuit /> },
+    { title: "Summarize OUAF Process Flow", description: "Condense a complex process document", icon: <FileStack /> },
+    { title: "Explain OUAF Configuration", description: "Break down a specific config step", icon: <Puzzle /> },
+    { title: "Locate OUAF Documentation", description: "Find a section in the docs", icon: <BookOpen /> },
+    { title: "Brainstorm OUAF Solutions", description: "Generate creative concepts for OUAF", icon: <Lightbulb /> },
+    { title: "OUAF Technical Q&A", description: "Ask a specific OUAF tech question", icon: <Bot /> },
   ];
 
   const handleThemeToggle = () => {
@@ -55,7 +55,7 @@ export default function HomePage() {
               <Link
                 key={prompt.title}
                 href={`/chat?message=${encodeURIComponent(prompt.title)}`}
-                className="flex"
+                className="flex h-full"
               >
                 <Card {...prompt} />
               </Link>
@@ -64,7 +64,7 @@ export default function HomePage() {
         </div>
       </main>
 
-      <footer className="p-4 bg-off-white/80 dark:bg-charcoal/50 border-t border-light-gray dark:border-medium-gray/20 backdrop-blur-sm">
+      <footer className="p-4 bg-white/80 dark:bg-charcoal/50 border-t border-light-gray dark:border-medium-gray/20 backdrop-blur-sm">
         <div className="mx-auto max-w-3xl">
           <ChatInput isOnHomePage={true} />
         </div>

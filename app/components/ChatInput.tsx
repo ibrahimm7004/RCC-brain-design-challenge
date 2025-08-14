@@ -139,7 +139,8 @@ export const ChatInput: React.FC<ChatInputProps> = ({
                 <button
                   type="submit"
                   disabled={!inputValue.trim()}
-                  className="flex h-10 w-10 items-center justify-center rounded-xl bg-sage text-white shadow-lg transition-all duration-200 hover:bg-sage/80 hover:scale-105 disabled:bg-medium-gray disabled:hover:scale-100 disabled:cursor-not-allowed"
+                  // MODIFIED: Changed hover class from sage/80 to a more visible clay-red
+                  className="flex h-10 w-10 items-center justify-center rounded-xl bg-sage text-white shadow-lg transition-all duration-200 hover:bg-clay-red hover:scale-110 disabled:bg-medium-gray disabled:hover:scale-100 disabled:cursor-not-allowed"
                   aria-label="Send message"
                 >
                   <Send size={16} />

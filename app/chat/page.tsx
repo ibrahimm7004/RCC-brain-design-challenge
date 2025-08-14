@@ -4,7 +4,7 @@ import React, { useEffect, useState, useRef } from 'react';
 import { useSearchParams } from 'next/navigation';
 import { ChatMessage } from '@/app/components/ChatMessage';
 import { ChatInput } from '@/app/components/ChatInput';
-import { Palette, Moon, Sun, ChevronDown, MessageSquare, Menu, X } from 'lucide-react';
+import { Palette, Moon, Sun, ChevronDown, MessageSquare, Menu, X, ChevronLeft, ArrowBigLeftDash } from 'lucide-react';
 import Link from 'next/link';
 import toast from 'react-hot-toast';
 
@@ -155,7 +155,7 @@ export default function ChatPage() {
         timestamp: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
       }]);
 
-      const response = await fetch('/api/chat', {
+      const response = await fetch('/api/mock-chat', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ message: userMessage, stream: true }),
@@ -263,11 +263,12 @@ export default function ChatPage() {
     <div className="flex-1 flex flex-col min-h-0 w-full bg-off-white dark:bg-charcoal font-sans transition-colors duration-200">
       <header className="flex-shrink-0 border-b border-b border-light-gray dark:border-medium-gray/20 bg-white/80 dark:bg-charcoal/50 backdrop-blur-sm shadow-sm p-4 z-10">
         <div className="mx-auto max-w-4xl flex items-center justify-between">
-          <Link href="/">
-            <h1 className="text-xl font-semibold text-charcoal dark:text-off-white cursor-pointer hover:opacity-80 transition-opacity">
-              Oracle Assistant
-            </h1>
+          <Link href="/" className="p-2 rounded-lg hover:bg-light-gray dark:hover:bg-medium-gray/20 transition-colors" aria-label="Back to home">
+            <ChevronLeft size={24} />
           </Link>
+          <h1 className="text-xl font-semibold text-charcoal dark:text-off-white cursor-pointer hover:opacity-80 transition-opacity">
+            Oracle Assistant
+          </h1>
           <div className="flex items-center gap-3">
 
             {/* Animation Style Selector */}

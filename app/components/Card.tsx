@@ -9,13 +9,14 @@ interface CardProps {
 export const Card: React.FC<CardProps> = ({ title, description, icon }) => {
   return (
     <div className="group rounded-xl p-6 shadow-md cursor-pointer
-                    flex flex-col h-full w-full 
-                    bg-white/80 border border-light-gray hover:border-sage
+                    flex flex-col h-full
+                    bg-white border border-light-gray hover:border-sage
                     dark:bg-white/5 dark:border-white/10 dark:hover:border-white/30 dark:hover:bg-white/10
                     backdrop-blur-sm transition-all duration-300">
       <div className="flex items-center gap-4 flex-grow">
+        {/* MODIFIED: The icon background now uses the "Sand" color as an accent */}
         <div className="rounded-lg p-2 transition-all
-                      bg-light-gray text-charcoal
+                      bg-sand/20 text-charcoal
                       dark:bg-white/10 dark:text-white dark:group-hover:bg-white/20">
           {icon}
         </div>

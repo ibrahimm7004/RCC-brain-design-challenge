@@ -57,7 +57,7 @@
   }
 
   body {
-    @apply bg-off-white dark:bg-charcoal transition-colors duration-300;
+    @apply bg-off-white text-charcoal dark:bg-charcoal dark:text-off-white transition-colors duration-300;
   }
 }
 
