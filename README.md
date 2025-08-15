@@ -18,11 +18,24 @@ This project successfully fulfills all core requirements and creatively expands 
 
 ---
 
+## API Endpoints
+
+The application uses the following API endpoints:
+
+* **`/api/chat`** - Main chat endpoint for streaming AI responses
+  * **POST** with `{ message: string, stream: boolean }`
+  * Returns Server-Sent Events (SSE) stream with `chunk`, `complete`, and `error` events
+  * Supports both streaming (`stream: true`) and block responses (`stream: false`)
+
+* **`/api/mock-chat`** - Development/testing endpoint for mock responses
+  * Used during development when backend is not available
+  * Simulates streaming behavior for UI testing
+
+* **`/api/health`** - Health check endpoint for monitoring
+
+---
+
 ## Tech Stack & Architecture
-## API Endpoints Used
-
-* **POST /api/chat** — Main endpoint for sending user messages and receiving streaming AI responses (SSE). The frontend sends `{ message, stream: true }` in the request body. All chat functionality is powered by this endpoint.
-
 
 The application is built on a modern, robust, and scalable tech stack.
 
@@ -39,44 +52,59 @@ The application is built on a modern, robust, and scalable tech stack.
 
 ---
 
+## Component Architecture
+
+### Frontend Component Breakdown
+
+* **HomePage** → Landing page with prompt cards and global chat input
+* **ChatPage** → Main chat interface with message history and streaming
+* **MessageList** → Container for chat messages with auto-scroll
+* **ChatMessage** → Individual message display with streaming animation
+* **ChatInput** → Message input with auto-resize and stop functionality
+* **TypingIndicator** → Animated dots during message generation
+* **Card** → Reusable prompt card component
+* **useChatClient** → Chat state management and API communication
+* **useSSEStream** → Server-Sent Events streaming logic
+* **Toast/Theme providers** → Global state and UI feedback
+* **apiClient** → HTTP client for API communication
+
+---
+
+## Streaming Sequence Flow
+
+### From Send to Complete (7 steps max)
+
+1. **Send** → User submits message via ChatInput
+2. **POST** → `{message, stream:true}` sent to `/api/chat`
+3. **SSE Start** → Server sends `event: start` with `{"type":"start"}`
+4. **SSE Chunks** → Server streams `event: chunk` with `{"type":"chunk", "content":"..."}`
+5. **UI Updates** → Frontend parses chunks and updates message content in real-time
+6. **SSE Complete** → Server sends `event: complete` with `{"type":"complete"}`
+7. **Stop/Abort** → User can interrupt at any time, triggering `AbortController.abort()`
+
+---
+
+## State Machine for Send/Stop
+
+### States and Transitions
+
+```
+States: idle → streaming → idle
+
+Transitions:
+- Send: idle → streaming (guard: !isLoading)
+- Complete: streaming → idle (guard: response finished)
+- Abort: streaming → idle (guard: user clicked stop)
+- Error: streaming → idle (guard: network/API error)
+
+Guards:
+- No send while streaming: isLoading check prevents multiple requests
+- Stop only while streaming: stop button only visible during active generation
+```
+
+---
+
 ## Future Roadmap & Potential
-## Known Issues & Limitations
-* **Stop response button:** The Stop button may not reliably interrupt the streaming response in all cases. This is a known limitation and will be addressed in future updates for more robust stream control.
-
-* **Bot formatting/standardization:** Message formatting and standardization are limited by the current backend prompt/config. Full control will be possible once the Bedrock Agent’s backend prompt/config is accessible. Wrapping messages is possible now, but perfect adherence is not guaranteed.
-
-## Lightweight Architectural Flows
-
-### a) Component Breakdown (Frontend)
-* **HomePage:** Landing page, shows prompt cards and theme toggle.
-* **ChatPage:** Main chat interface, manages message state and streaming.
-* **MessageList:** Renders all chat messages (integrated in ChatPage).
-* **ChatMessage:** Displays a single message, handles animation and actions.
-* **ChatInput:** User input field, handles send/stop and keyboard shortcuts.
-* **TypingIndicator:** Shows animated dots while assistant is streaming.
-* **useChatClient:** (future) Encapsulates chat logic and API calls.
-* **useSSEStream:** (future) Handles SSE streaming logic.
-* **Toast/Theme providers:** Global UI feedback and theme management.
-* **apiClient:** (future) Centralized API request logic.
-
-### b) Streaming Sequence (max 7 steps)
-1. User types message and clicks Send.
-2. Frontend POSTs `{ message, stream: true }` to `/api/chat`.
-3. Backend responds with SSE stream: start → chunk(s) → complete.
-4. Frontend parses each chunk and updates UI in real time.
-5. Typing animation and cursor update as chunks arrive.
-6. User can click Stop to abort stream (AbortController).
-7. Errors trigger toast notifications; UI resets to idle.
-
-### c) Tiny State Machine for Send/Stop
-* **States:** idle → streaming → idle
-* **Transitions:**
-    * Send: idle → streaming
-    * Complete: streaming → idle
-    * Abort: streaming → idle
-    * Error: streaming → idle
-* **Guards:**
-    * No send allowed while streaming
 
 The current application serves as a powerful and complete proof-of-concept. The architecture was intentionally designed to be scalable, paving the way for several high-impact future enhancements.
 
@@ -84,6 +112,14 @@ The current application serves as a powerful and complete proof-of-concept. The 
 * **True Multi-Agent Architecture:** The backend was designed to support multiple specialized agents. The current UI simulates this by pre-filling prompts, but a future version could pass a specific `agentId` to the backend. This would unlock highly specialized and powerful conversational experiences (e.g., a dedicated "Code Review Agent" or "Document Summarization Agent").
 * **Advanced Error Insight:** While robust error handling is in place, it could be enhanced to provide more specific feedback to the user based on different error codes from the backend.
 * **Smooth Page Transitions:** Implement library-driven animations (e.g., using Framer Motion) to create even smoother and more visually appealing transitions between the home and chat pages.
+
+---
+
+## Known Issues & Limitations
+
+* **Bot Behavior Formatting:** Message formatting and standardization can only be fully optimized once we have access to the Bedrock Agent's backend prompt/config. While message wrapping is implemented, it won't guarantee perfect adherence to formatting standards.
+* **Animation Performance:** On lower-end devices, the typing animations may experience slight performance issues during rapid streaming.
+* **Mobile Keyboard Handling:** Some mobile browsers may have inconsistent behavior with the viewport adjustments during keyboard interactions.
 
 ---
 
@@ -113,3 +149,9 @@ The current application serves as a powerful and complete proof-of-concept. The 
     npm run dev
     ```
 5.  Open [http://localhost:3000](http://localhost:3000) in your browser.
+
+### Environment Configuration
+
+* **Development:** Uses mock API endpoints for testing
+* **Production:** Configure backend API endpoints in environment variables
+* **Streaming:** Ensure backend supports Server-Sent Events (SSE) format

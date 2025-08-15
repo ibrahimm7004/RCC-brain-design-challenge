@@ -8,11 +8,12 @@
     --font-mono: var(--font-jetbrains-mono);
   }
 
-  /* Smooth scrolling for html and custom scroll containers */
+  /* Smooth scrolling for all scrollable elements */
   html {
     scroll-behavior: smooth;
   }
   
+  /* Enhanced smooth scrolling for custom scroll containers */
   .smooth-scroll {
     scroll-behavior: smooth;
   }

@@ -15,6 +15,7 @@ const jetbrainsMono = JetBrains_Mono({
   variable: '--font-jetbrains-mono',
 });
 
+// Client-side theme initialization script
 const themeScript = `
     (function() {
       try {
@@ -39,8 +40,7 @@ export default function RootLayout({
   return (
     <html lang="en" className={`${manrope.variable} ${jetbrainsMono.variable} h-full overflow-hidden`} suppressHydrationWarning>
       <body className="h-full flex flex-col">
-  {/* Theme script for dark mode on first paint */}
-  <script dangerouslySetInnerHTML={{ __html: themeScript }} />
+        <script dangerouslySetInnerHTML={{ __html: themeScript }} />
         <Toaster
           position="top-right"
           toastOptions={{
