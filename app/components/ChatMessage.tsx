@@ -3,6 +3,7 @@
 import React, { useState, useEffect, useMemo, useRef } from 'react';
 import { Bot, User, Copy, RotateCcw, Check } from 'lucide-react';
 import clsx from 'clsx';
+import { motion } from 'framer-motion';
 
 type AnimationStyle = 'claude' | 'chatgpt' | 'gemini' | 'smooth';
 
@@ -15,6 +16,38 @@ interface ChatMessageProps {
   messageId?: string;
   animationStyle?: AnimationStyle;
 }
+
+ const TypingIndicator = () => {
+    const dotTransition = {
+      duration: 0.8,          // How long one cycle takes
+      repeat: Infinity,       // Loop forever
+      repeatType: "reverse" as const,   // Bounce back and forth smoothly
+      ease: "easeInOut" as const,      // A gentle acceleration and deceleration
+    };
+
+    return (
+      <div className="flex items-center gap-1.5 p-2">
+        <motion.div
+          className="h-2.5 w-2.5 bg-medium-gray rounded-full"
+          initial={{ opacity: 0.3, scale: 0.8 }}
+          animate={{ opacity: 1, scale: 1.2 }}
+          transition={{ ...dotTransition, delay: 0 }}
+        />
+        <motion.div
+          className="h-2.5 w-2.5 bg-medium-gray rounded-full"
+          initial={{ opacity: 0.3, scale: 0.8 }}
+          animate={{ opacity: 1, scale: 1.2 }}
+          transition={{ ...dotTransition, delay: 0.2 }}
+        />
+        <motion.div
+          className="h-2.5 w-2.5 bg-medium-gray rounded-full"
+          initial={{ opacity: 0.3, scale: 0.8 }}
+          animate={{ opacity: 1, scale: 1.2 }}
+          transition={{ ...dotTransition, delay: 0.4 }}
+        />
+      </div>
+    );
+  }; 
 
 export const ChatMessage: React.FC<ChatMessageProps> = ({
   role,
@@ -43,7 +76,9 @@ export const ChatMessage: React.FC<ChatMessageProps> = ({
       // REMOVED: The 'bg-white/50' that was causing the unwanted background
     }
   );
-  useEffect(() => {
+
+ 
+   useEffect(() => {
     displayedRef.current = displayedStable + fadingChunk;
   }, [displayedStable, fadingChunk]);
   contentRef.current = content;
@@ -184,7 +219,7 @@ export const ChatMessage: React.FC<ChatMessageProps> = ({
 
   const getCursorAnimation = () => {
     // Show cursor if streaming and not fully displayed
-    if (!isStreaming || displayedContent.length >= content.length) return '';
+    if (!isStreaming || displayedContent.length === 0) return '';
 
     switch (animationStyle) {
       case 'claude':
@@ -218,7 +253,7 @@ export const ChatMessage: React.FC<ChatMessageProps> = ({
               </span>
               {timestamp && <span className="text-xs text-medium-gray opacity-0 group-hover:opacity-100 transition-opacity duration-300">{timestamp}</span>}
             </div>
-            
+
             {isUser ? (
               // USER gets a contained bubble, aligned right by the parent flex-row-reverse
               <div className="flex justify-end">
@@ -233,8 +268,10 @@ export const ChatMessage: React.FC<ChatMessageProps> = ({
               <div>
                 <div className={`leading-relaxed whitespace-pre-wrap text-left ${getCursorAnimation()}`}>
                   <span>{displayedStable}</span>
-                  {fadingChunk && ( <span className={fadeOn ? 'animate-fade-in' : 'opacity-0'}>{fadingChunk}</span> )}
-                  {displayedContent.length === 0 && isStreaming && ( <span className="opacity-60">Thinking...</span> )}
+                  {fadingChunk && (<span className={fadeOn ? 'animate-fade-in' : 'opacity-0'}>{fadingChunk}</span>)}
+                  {displayedContent.length === 0 && isStreaming && (
+                    <TypingIndicator />
+                  )}
                 </div>
               </div>
             )}

@@ -51,7 +51,11 @@ export default function ChatPage() {
   };
 
   const handleScroll = () => {
-    stickToBottomRef.current = isNearBottom();
+    const el = scrollContainerRef.current;
+    if (!el) return;
+    // Check if the user is scrolled near the bottom
+    const isAtBottom = el.scrollHeight - el.scrollTop - el.clientHeight < 100;
+    stickToBottomRef.current = isAtBottom;
   };
 
   useEffect(() => {
@@ -60,6 +64,13 @@ export default function ChatPage() {
       setIsDarkMode(savedTheme === 'dark');
     }
   }, []);
+
+  useEffect(() => {
+  // Only auto-scroll if the user is already near the bottom.
+  if (stickToBottomRef.current) {
+    scrollToBottom(isLoading ? false : true); // Instant scroll during streaming, smooth otherwise.
+  }
+}, [messages, isLoading]);
 
   useEffect(() => {
     const initialMessage = searchParams.get('message');
@@ -90,20 +101,6 @@ export default function ChatPage() {
   useEffect(() => {
     document.documentElement.classList.toggle('dark', isDarkMode);
   }, [isDarkMode]);
-
-  // Keep view pinned to bottom while streaming (no smooth to avoid jitter)
-  useEffect(() => {
-    if (stickToBottomRef.current) {
-      scrollToBottom(false);
-    }
-  }, [messages]);
-
-  // When streaming finishes, do one smooth settle to the absolute bottom
-  useEffect(() => {
-    if (!isLoading) {
-      scrollToBottom(true);
-    }
-  }, [isLoading]);
 
   // If message DOM grows due to animations/images, keep pinned when near bottom
   useEffect(() => {
@@ -259,7 +256,7 @@ export default function ChatPage() {
   ];
 
   return (
-    <div className="flex-1 flex flex-col min-h-0 w-full bg-off-white dark:bg-charcoal font-sans transition-colors duration-200">
+    <div className="h-screen flex flex-col w-full bg-off-white dark:bg-charcoal font-sans transition-colors duration-200">
       <header className="flex-shrink-0 border-b border-b border-light-gray dark:border-medium-gray/20 bg-white/80 dark:bg-charcoal/50 backdrop-blur-sm shadow-sm p-4 z-10">
         <div className="mx-auto max-w-4xl flex items-center justify-between">
           <Link href="/" className="p-2 rounded-lg hover:bg-light-gray dark:hover:bg-medium-gray/20 transition-colors" aria-label="Back to home">
@@ -328,7 +325,7 @@ export default function ChatPage() {
       </header>
 
       <main ref={scrollContainerRef} onScroll={handleScroll} className="flex-1 overflow-y-auto">
-        <div ref={contentRef} className="mx-auto pt-4">
+        <div ref={contentRef} className="mx-auto pt-4 min-h-full">
           {messages.map((message) => (
             <ChatMessage
               key={`${message.id}-${animationStyle}`}

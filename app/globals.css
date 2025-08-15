@@ -7,6 +7,16 @@
     --font-sans: var(--font-manrope);
     --font-mono: var(--font-jetbrains-mono);
   }
+
+  /* Smooth scrolling for all scrollable elements */
+  html {
+    scroll-behavior: smooth;
+  }
+  
+  /* Enhanced smooth scrolling for custom scroll containers */
+  .smooth-scroll {
+    scroll-behavior: smooth;
+  }
 }
 
 /* Theme color variables for consistent design system */
@@ -76,5 +86,32 @@
   .animate-fade-in-word {
     animation: fadeIn 0.5s ease-out forwards;
     opacity: 0; 
+  }
+
+  /* Typing indicator dots animation */
+  @keyframes typingDot {
+    0%, 60%, 100% {
+      opacity: 0.3;
+      transform: scale(0.8);
+    }
+    30% {
+      opacity: 1;
+      transform: scale(1.2);
+    }
+  }
+  
+  .animate-typing-dot-1 {
+    animation: typingDot 1.6s infinite;
+    animation-delay: 0s;
+  }
+  
+  .animate-typing-dot-2 {
+    animation: typingDot 1.6s infinite;
+    animation-delay: 0.4s;
+  }
+  
+  .animate-typing-dot-3 {
+    animation: typingDot 1.6s infinite;
+    animation-delay: 0.8s;
   }
 }
