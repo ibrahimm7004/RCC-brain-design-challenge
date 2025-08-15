@@ -19,6 +19,10 @@ This project successfully fulfills all core requirements and creatively expands 
 ---
 
 ## Tech Stack & Architecture
+## API Endpoints Used
+
+* **POST /api/chat** — Main endpoint for sending user messages and receiving streaming AI responses (SSE). The frontend sends `{ message, stream: true }` in the request body. All chat functionality is powered by this endpoint.
+
 
 The application is built on a modern, robust, and scalable tech stack.
 
@@ -36,6 +40,43 @@ The application is built on a modern, robust, and scalable tech stack.
 ---
 
 ## Future Roadmap & Potential
+## Known Issues & Limitations
+* **Stop response button:** The Stop button may not reliably interrupt the streaming response in all cases. This is a known limitation and will be addressed in future updates for more robust stream control.
+
+* **Bot formatting/standardization:** Message formatting and standardization are limited by the current backend prompt/config. Full control will be possible once the Bedrock Agent’s backend prompt/config is accessible. Wrapping messages is possible now, but perfect adherence is not guaranteed.
+
+## Lightweight Architectural Flows
+
+### a) Component Breakdown (Frontend)
+* **HomePage:** Landing page, shows prompt cards and theme toggle.
+* **ChatPage:** Main chat interface, manages message state and streaming.
+* **MessageList:** Renders all chat messages (integrated in ChatPage).
+* **ChatMessage:** Displays a single message, handles animation and actions.
+* **ChatInput:** User input field, handles send/stop and keyboard shortcuts.
+* **TypingIndicator:** Shows animated dots while assistant is streaming.
+* **useChatClient:** (future) Encapsulates chat logic and API calls.
+* **useSSEStream:** (future) Handles SSE streaming logic.
+* **Toast/Theme providers:** Global UI feedback and theme management.
+* **apiClient:** (future) Centralized API request logic.
+
+### b) Streaming Sequence (max 7 steps)
+1. User types message and clicks Send.
+2. Frontend POSTs `{ message, stream: true }` to `/api/chat`.
+3. Backend responds with SSE stream: start → chunk(s) → complete.
+4. Frontend parses each chunk and updates UI in real time.
+5. Typing animation and cursor update as chunks arrive.
+6. User can click Stop to abort stream (AbortController).
+7. Errors trigger toast notifications; UI resets to idle.
+
+### c) Tiny State Machine for Send/Stop
+* **States:** idle → streaming → idle
+* **Transitions:**
+    * Send: idle → streaming
+    * Complete: streaming → idle
+    * Abort: streaming → idle
+    * Error: streaming → idle
+* **Guards:**
+    * No send allowed while streaming
 
 The current application serves as a powerful and complete proof-of-concept. The architecture was intentionally designed to be scalable, paving the way for several high-impact future enhancements.
 
