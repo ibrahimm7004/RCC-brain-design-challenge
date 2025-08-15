@@ -17,37 +17,37 @@ interface ChatMessageProps {
   animationStyle?: AnimationStyle;
 }
 
- const TypingIndicator = () => {
-    const dotTransition = {
-      duration: 0.8,          // How long one cycle takes
-      repeat: Infinity,       // Loop forever
-      repeatType: "reverse" as const,   // Bounce back and forth smoothly
-      ease: "easeInOut" as const,      // A gentle acceleration and deceleration
-    };
+const TypingIndicator = () => {
+  const dotTransition = {
+    duration: 0.8,          // How long one cycle takes
+    repeat: Infinity,       // Loop forever
+    repeatType: "reverse" as const,   // Bounce back and forth smoothly
+    ease: "easeInOut" as const,      // A gentle acceleration and deceleration
+  };
 
-    return (
-      <div className="flex items-center gap-1.5 p-2">
-        <motion.div
-          className="h-2.5 w-2.5 bg-medium-gray rounded-full"
-          initial={{ opacity: 0.3, scale: 0.8 }}
-          animate={{ opacity: 1, scale: 1.2 }}
-          transition={{ ...dotTransition, delay: 0 }}
-        />
-        <motion.div
-          className="h-2.5 w-2.5 bg-medium-gray rounded-full"
-          initial={{ opacity: 0.3, scale: 0.8 }}
-          animate={{ opacity: 1, scale: 1.2 }}
-          transition={{ ...dotTransition, delay: 0.2 }}
-        />
-        <motion.div
-          className="h-2.5 w-2.5 bg-medium-gray rounded-full"
-          initial={{ opacity: 0.3, scale: 0.8 }}
-          animate={{ opacity: 1, scale: 1.2 }}
-          transition={{ ...dotTransition, delay: 0.4 }}
-        />
-      </div>
-    );
-  }; 
+  return (
+    <div className="flex items-center gap-1.5 p-2">
+      <motion.div
+        className="h-2.5 w-2.5 bg-medium-gray rounded-full"
+        initial={{ opacity: 0.3, scale: 0.8 }}
+        animate={{ opacity: 1, scale: 1.2 }}
+        transition={{ ...dotTransition, delay: 0 }}
+      />
+      <motion.div
+        className="h-2.5 w-2.5 bg-medium-gray rounded-full"
+        initial={{ opacity: 0.3, scale: 0.8 }}
+        animate={{ opacity: 1, scale: 1.2 }}
+        transition={{ ...dotTransition, delay: 0.2 }}
+      />
+      <motion.div
+        className="h-2.5 w-2.5 bg-medium-gray rounded-full"
+        initial={{ opacity: 0.3, scale: 0.8 }}
+        animate={{ opacity: 1, scale: 1.2 }}
+        transition={{ ...dotTransition, delay: 0.4 }}
+      />
+    </div>
+  );
+}; 
 
 export const ChatMessage: React.FC<ChatMessageProps> = ({
   role,
@@ -70,19 +70,19 @@ export const ChatMessage: React.FC<ChatMessageProps> = ({
 
   const displayedRef = useRef(displayedContent);
   displayedRef.current = displayedContent;
+  
   const messageContainerClasses = clsx(
     'group w-full py-6 transition-all duration-200',
-    {
-      // REMOVED: The 'bg-white/50' that was causing the unwanted background
-    }
+    {}
   );
 
- 
-   useEffect(() => {
+  // Update displayed content reference when content changes
+  useEffect(() => {
     displayedRef.current = displayedStable + fadingChunk;
   }, [displayedStable, fadingChunk]);
   contentRef.current = content;
 
+  // Main animation effect for streaming messages
   useEffect(() => {
     // User messages render instantly
     if (isUser) {
@@ -188,7 +188,7 @@ export const ChatMessage: React.FC<ChatMessageProps> = ({
       tickTimer = window.setTimeout(tick, baseDelay() + jitter + extra);
     };
 
-    // Kick off
+    // Start animation
     tickTimer = window.setTimeout(tick, 200);
 
     return () => {
@@ -238,7 +238,6 @@ export const ChatMessage: React.FC<ChatMessageProps> = ({
   return (
     <div className={messageContainerClasses} role="article" aria-labelledby={`message-${messageId}`}>
       <div className="max-w-4xl mx-auto px-6">
-        {/* THIS IS THE FIX for user message alignment */}
         <div className={`flex gap-4 ${isUser ? 'flex-row-reverse' : ''}`}>
           {/* Avatar */}
           <div className={`flex-shrink-0 w-10 h-10 rounded-xl flex items-center justify-center shadow-lg ${isUser ? 'bg-primary-gradient' : 'bg-secondary-gradient'} text-white`}>
@@ -255,7 +254,7 @@ export const ChatMessage: React.FC<ChatMessageProps> = ({
             </div>
 
             {isUser ? (
-              // USER gets a contained bubble, aligned right by the parent flex-row-reverse
+              // User message bubble
               <div className="flex justify-end">
                 <div className="inline-block max-w-[70%] p-4 rounded-2xl shadow-sm bg-primary-gradient text-white rounded-br-lg">
                   <div className={`leading-relaxed whitespace-pre-wrap text-left`}>
@@ -264,7 +263,7 @@ export const ChatMessage: React.FC<ChatMessageProps> = ({
                 </div>
               </div>
             ) : (
-              // ASSISTANT gets a full-width, "unboxed" response
+              // Assistant message (full-width)
               <div>
                 <div className={`leading-relaxed whitespace-pre-wrap text-left ${getCursorAnimation()}`}>
                   <span>{displayedStable}</span>
@@ -275,11 +274,13 @@ export const ChatMessage: React.FC<ChatMessageProps> = ({
                 </div>
               </div>
             )}
+            
+            {/* Action buttons - show when not actively streaming */}
             {!isStreaming && content && (
               <div className={`mt-2 opacity-0 group-hover:opacity-100 transition-opacity duration-200 ${isUser ? 'text-right' : 'text-left'}`}>
                 <div className="inline-flex items-center gap-1">
                   <button onClick={handleCopy}
-                    aria-label={copied ? "Message copied" : `Copy assistant's message`}
+                    aria-label={copied ? "Message copied" : `Copy message`}
                     className="flex items-center gap-1 px-2 py-1 text-xs text-medium-gray hover:text-charcoal dark:hover:text-off-white rounded-md hover:bg-light-gray dark:hover:bg-charcoal/50">
                     {copied ? <Check size={12} /> : <Copy size={12} />}
                     <span>{copied ? 'Copied!' : 'Copy'}</span>
@@ -290,9 +291,7 @@ export const ChatMessage: React.FC<ChatMessageProps> = ({
                       aria-label="Retry generating this response"
                       className="flex items-center gap-1 px-2 py-1 text-xs text-medium-gray hover:text-charcoal dark:hover:text-off-white rounded-md hover:bg-light-gray dark:hover:bg-charcoal/50">
                       <RotateCcw size={12} />
-                      <span>
-                        Retry
-                      </span>
+                      <span>Retry</span>
                     </button>
                   )}
                 </div>

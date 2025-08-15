@@ -9,6 +9,7 @@ import Link from 'next/link';
 export default function HomePage() {
   const [isDarkMode, setIsDarkMode] = useState(true);
 
+  // Predefined prompts for common OUAF queries
   const prompts = [
     { title: "Summarize OUAF Process Flow", description: "Condense a complex process document", icon: <FileStack /> },
     { title: "Explain OUAF Configuration", description: "Break down a specific config step", icon: <Puzzle /> },
@@ -24,6 +25,7 @@ export default function HomePage() {
     document.documentElement.classList.toggle('dark', newIsDarkMode);
   };
 
+  // Initialize theme from localStorage
   useEffect(() => {
     const savedTheme = localStorage.getItem('theme');
     if (savedTheme) {
@@ -50,6 +52,7 @@ export default function HomePage() {
             <p className="mt-3 text-lg text-medium-gray">Your AI partner for OUAF documentation</p>
           </div>
 
+          {/* Prompt cards grid */}
           <div className="grid grid-cols-1 gap-5 sm:grid-cols-2 sm:p-0 md:grid-cols-3 grid-flow-row-dense">
             {prompts.map((prompt) => (
               <Link

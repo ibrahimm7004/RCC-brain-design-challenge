@@ -60,7 +60,7 @@ export const ChatInput: React.FC<ChatInputProps> = ({
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
 
-    // If loading/streaming, don't submit
+    // Prevent submission if already processing a response
     if (isLoading) {
       return;
     }

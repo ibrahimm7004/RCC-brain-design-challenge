@@ -1,5 +1,3 @@
-// app/components/Card.tsx
-
 import React from 'react';
 
 interface CardProps {
@@ -16,7 +14,6 @@ export const Card: React.FC<CardProps> = ({ title, description, icon }) => {
                     dark:bg-white/5 dark:border-white/10 dark:hover:border-white/30 dark:hover:bg-white/10
                     backdrop-blur-sm transition-all duration-300">
       
-      {/* THE ONLY CHANGE IS ON THIS LINE: items-center is now items-start */}
       <div className="flex items-start gap-4 flex-grow">
         <div className="rounded-lg p-2 transition-all
                       bg-sand/20 text-charcoal

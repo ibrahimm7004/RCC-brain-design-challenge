@@ -58,6 +58,7 @@ export default function ChatPage() {
     stickToBottomRef.current = isAtBottom;
   };
 
+  // Initialize theme from localStorage
   useEffect(() => {
     const savedTheme = localStorage.getItem('theme');
     if (savedTheme) {
@@ -65,13 +66,14 @@ export default function ChatPage() {
     }
   }, []);
 
+  // Auto-scroll when new messages arrive (only if user is near bottom)
   useEffect(() => {
-  // Only auto-scroll if the user is already near the bottom.
-  if (stickToBottomRef.current) {
-    scrollToBottom(isLoading ? false : true); // Instant scroll during streaming, smooth otherwise.
-  }
-}, [messages, isLoading]);
+    if (stickToBottomRef.current) {
+      scrollToBottom(isLoading ? false : true); // Instant scroll during streaming, smooth otherwise
+    }
+  }, [messages, isLoading]);
 
+  // Handle initial message from URL params
   useEffect(() => {
     const initialMessage = searchParams.get('message');
     if (initialMessage && !initialMessageProcessed.current) {
@@ -97,12 +99,12 @@ export default function ChatPage() {
     };
   }, [showSettings]);
 
-  // Dark mode toggle
+  // Apply dark mode to document
   useEffect(() => {
     document.documentElement.classList.toggle('dark', isDarkMode);
   }, [isDarkMode]);
 
-  // If message DOM grows due to animations/images, keep pinned when near bottom
+  // Handle content resizing for streaming messages
   useEffect(() => {
     const target = contentRef.current;
     if (!target) return;
@@ -115,26 +117,18 @@ export default function ChatPage() {
     return () => ro.disconnect();
   }, []);
 
-  useEffect(() => {
-    const initialMessage = searchParams.get('message');
-    if (initialMessage && !initialMessageProcessed.current) {
-      initialMessageProcessed.current = true;
-      handleSendMessage(initialMessage);
-    }
-  }, [searchParams]);
-
   // Main message sending logic
   const handleSendMessage = async (userMessage: string) => {
     setFailedPrompt(null);
     setIsLoading(true);
     abortControllerRef.current = new AbortController();
 
-    setIsLoading(true);
     const messageId = `msg-${Date.now()}`;
     const assistantMessageId = `assistant-${messageId}`;
     const userId = `user-${messageId}`;
+    
     try {
-
+      // Add user message to chat
       setMessages(prev => [...prev, {
         id: userId,
         role: 'user',
@@ -144,6 +138,7 @@ export default function ChatPage() {
 
       setCurrentStreamingMessageId(assistantMessageId);
 
+      // Add empty assistant message for streaming
       setMessages(prev => [...prev, {
         id: assistantMessageId,
         role: 'assistant',
@@ -151,7 +146,7 @@ export default function ChatPage() {
         timestamp: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
       }]);
 
-      const response = await fetch('/api/mock-chat', {
+      const response = await fetch('/api/chat', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ message: userMessage, stream: true }),

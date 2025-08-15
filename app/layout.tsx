@@ -39,7 +39,8 @@ export default function RootLayout({
   return (
     <html lang="en" className={`${manrope.variable} ${jetbrainsMono.variable} h-full overflow-hidden`} suppressHydrationWarning>
       <body className="h-full flex flex-col">
-        <script dangerouslySetInnerHTML={{ __html: themeScript }} />
+  {/* Theme script for dark mode on first paint */}
+  <script dangerouslySetInnerHTML={{ __html: themeScript }} />
         <Toaster
           position="top-right"
           toastOptions={{
