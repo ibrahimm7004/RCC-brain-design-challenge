@@ -147,8 +147,10 @@ The current application serves as a powerful and complete proof-of-concept. The 
    npm install
    ```
 4. **Update environment variables:**
+
    - Rename the `.env.example` file to `.env`
    - Fill in the actual values for each environment variable
+
 5. **Run the development server:**
    ```bash
    npm run dev
@@ -160,3 +162,9 @@ The current application serves as a powerful and complete proof-of-concept. The 
 - **Development:** Uses mock API endpoints for testing
 - **Production:** Configure backend API endpoints in environment variables
 - **Streaming:** Ensure backend supports Server-Sent Events (SSE) format
+
+---
+
+## Contact:
+
+ibrahim.m7004@gmail.com
